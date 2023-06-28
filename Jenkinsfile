@@ -8,8 +8,9 @@ node {
         }
         stage('Deploy'){
             sh './jenkins/scripts/deliver.sh'
-            timeout(time: 1)
-            sh './jenkins/scripts/kill.sh'
+            timeout(time: 1) {
+                sh './jenkins/scripts/kill.sh'
+            }
         }
     }
 }

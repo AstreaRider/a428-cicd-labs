@@ -7,10 +7,10 @@ node {
             sh './jenkins/scripts/test.sh'
         }
         stage('Deploy'){
-            sh './jenkins/scripts/deliver.sh'
             timeout(time: 1) {
-                sh './jenkins/scripts/kill.sh'
+                sh './jenkins/scripts/deliver.sh'
             }
+            sh './jenkins/scripts/kill.sh'
         }
     }
 }

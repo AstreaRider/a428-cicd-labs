@@ -7,7 +7,7 @@ node {
             sh './jenkins/scripts/test.sh'
         }
         stage('Deploy'){
-            timeout(time: 1) {
+            timeout(time: 60, unit: 'SECONDS') {
                 sh './jenkins/scripts/deliver.sh'
             }
             sh './jenkins/scripts/kill.sh'

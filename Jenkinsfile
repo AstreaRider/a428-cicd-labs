@@ -2,6 +2,9 @@ pipeline {
     agent any
     stages {
         stage('Build') { 
+            agent {
+                image 'node:lts-buster-slim'
+            }
             steps {
                 sh 'npm install' 
             }

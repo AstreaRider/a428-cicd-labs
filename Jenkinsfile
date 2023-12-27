@@ -26,14 +26,13 @@
 //     }
 // }
 
-pipeline {
-    podTemplate(containers: [
-    containerTemplate(
-        name: 'node', 
-        image: 'node:lts-buster-slim'
-        )
-  ]) {
 
+podTemplate(containers: [
+containerTemplate(
+    name: 'node', 
+    image: 'node:lts-buster-slim'
+    )
+]) {
     node(POD_LABEL) {
         stage('React App CI') {
             container('node') {
@@ -45,5 +44,5 @@ pipeline {
 
     }
 }
-}
+
 

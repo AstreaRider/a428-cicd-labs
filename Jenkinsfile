@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('Build') { 
             agent {
-                image 'node:lts-buster-slim'
+                kubernetes {
+                    image 'node:lts-buster-slim'
+                }
             }
             steps {
                 sh 'npm install' 

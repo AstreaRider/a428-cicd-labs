@@ -1,18 +1,27 @@
-node {
-    withDockerContainer(args: '-p 3000:3000', image: 'node:16-buster-slim') {
-        stage('Build'){
-            sh 'npm install'
+pipeline {
+    agent {
+        docker {
+            image 'node:16-buster-slim' 
+            args '-p 3000:3000' 
         }
-        stage('Test'){
-            sh './jenkins/scripts/test.sh'
+    }
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'npm install' 
+            }
         }
-        stage('Manual Approval'){
-            input message: 'Lanjutkan ke tahap Deploy?'
+        stage('Test') {
+            steps {
+                sh './jenkins/scripts/test.sh'
+            }
         }
-        stage('Deploy'){
-            sh './jenkins/scripts/deliver.sh'
-            sleep time: 1, unit: 'MINUTES'
-            sh './jenkins/scripts/kill.sh'
+        stage('Deploy') {
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+                input message: 'Sudah selesai menggunakan React App? (Klik "Proceed" untuk mengakhiri)'
+                sh './jenkins/scripts/kill.sh'
+            }
         }
     }
 }

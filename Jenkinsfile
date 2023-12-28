@@ -28,17 +28,12 @@
 
 
 podTemplate(containers: [
-containerTemplate(
-    name: 'node', 
-    image: 'node:lts-buster-slim'
-    )
+    containerTemplate(name: 'node', image: 'node:lts-buster-slim')
 ]) {
     node(POD_LABEL) {
-        stage('React App CI') {
+        stage('Build') {
             container('node') {
-                stage('Build') {
-                    sh 'npm install'
-                }
+                sh 'npm install'
             }
         }
 

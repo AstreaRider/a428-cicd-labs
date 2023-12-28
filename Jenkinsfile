@@ -27,17 +27,65 @@
 // }
 
 
-podTemplate(containers: [
-    containerTemplate(name: 'node', image: 'node:lts-buster-slim')
-]) {
-    node(POD_LABEL) {
+pipeline {
+    agent {
+        kubernetes {
+            // Spesifikasi label untuk node di Kubernetes
+            label 'my-kubernetes-label'
+            // Template pod untuk menggunakan image Node.js
+            defaultContainer 'nodejs'
+            yaml """
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  labels:
+                    some-label: some-label-value
+                spec:
+                  containers:
+                  - name: nodejs
+                    image: node:lts-buster-slim
+                    ports:
+                    - containerPort: 3000
+                    command:
+                    - cat
+                    tty: true
+                  restartPolicy: Never
+            """
+        }
+    }
+    environment {
+        CI = 'true'
+    }
+    stages {
         stage('Build') {
-            container('node') {
-                sh 'npm install'
+            steps {
+                container('nodejs') {
+                    // Perintah npm install
+                    sh 'npm install'
+                }
             }
         }
-
+        stage('Test') {
+            steps {
+                container('nodejs') {
+                    // Jalankan skrip test.sh di dalam kontainer
+                    sh './jenkins/scripts/test.sh'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                container('nodejs') {
+                    // Jalankan skrip deliver.sh di dalam kontainer
+                    sh './jenkins/scripts/deliver.sh'
+                    input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                    // Jalankan skrip kill.sh di dalam kontainer
+                    sh './jenkins/scripts/kill.sh'
+                }
+            }
+        }
     }
 }
+
 
 
